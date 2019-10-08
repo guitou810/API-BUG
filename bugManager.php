@@ -1,0 +1,85 @@
+<?php
+
+include_once('bug.php');
+include_once('manager.php');
+
+class BugManager extends Manager
+{
+
+    private $bugs;
+
+    // public function getBugs()
+    // {
+    //     return $this->bugs;
+    // }
+
+    // public function addBug(Bug $bug)
+    // {
+
+    //     $this->bugs[$bug->getId()] = $bug;
+    // }
+
+    public function find($id)
+    {
+
+        $dbh = $this->connectDb();
+
+        $sth = $dbh->prepare('SELECT * FROM bug WHERE id = :id');
+        $sth->bindParam(':id', $id, PDO::PARAM_INT);
+        $sth->execute();
+        $result = $sth->fetch(PDO::FETCH_ASSOC);
+
+        $bug = new Bug();
+        $bug->setId($result["id"]);
+        $bug->setTitre($result["title"]);
+        $bug->setDescription($result["description"]);
+        $bug->setCreatedAt($result["createdAt"]);
+        $bug->setClosed($result["closed"]);
+
+        return $bug;
+    }
+
+
+    public function findAll()
+    {
+
+        $dbh = $this->connectDb();
+
+        $results = $dbh->query('SELECT * FROM `bug` ORDER BY `id`', PDO::FETCH_ASSOC);
+
+        $bugs = [];
+
+        // Parcours des résultats
+        foreach ($results as $result) {
+            $bug = new Bug();
+            $bug->setId($result["id"]);
+            $bug->setTitre($result["title"]);
+            $bug->setDescription($result["description"]);
+            $bug->setCreatedAt($result["createdAt"]);
+            $bug->setClosed($result["closed"]);
+            
+            $bugs[] = $bug;
+        }
+
+        return $bugs;
+    }
+
+
+    public function load(){
+
+        $handle = @fopen("result.txt", "r");
+        if ($handle) {
+            while (($buffer = fgets($handle, 4096)) !== false) { // TODO: 1 Finaliser la récupération des données issues d'un txt
+                list($id, $description) = explode(";", $buffer);
+                $bug = new Bug($id, $description);
+                $this->addBug($bug);
+        }
+        if (!feof($handle)) {
+            echo "Erreur: fgets() a échoué\n";
+        }
+        fclose($handle);
+        }
+
+    }
+
+}
