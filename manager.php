@@ -9,11 +9,10 @@ class Manager
 
         try{
 
-            $pdo_options[PDO::ATTR_ERRMODE] = PDO::ERRMODE_EXCEPTION;
+            $pdo_options[\PDO::ATTR_ERRMODE] = \PDO::ERRMODE_EXCEPTION;
     
-            $dbh = new PDO(DSN, LOGIN, MOT_DE_PASSE, $pdo_options);
-            // $dbh = new PDO('mysql:host=localhost;dbname=bugmanager;charset=utf8', 'alex', 'alex', $pdo_options);
-            
+            $dbh = new \PDO(DSN, LOGIN, MOT_DE_PASSE, $pdo_options);
+                        
             } catch (Exception $e){
 
                 die('Erreur : ' . $e->getMessage());
