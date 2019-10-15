@@ -3,13 +3,14 @@
 class Bug {
     
     public $id;
-    public $titre;
+    public $title;
     public $description;
     public $createdAt;
     public $closed;
     
     function __construct() {
-        
+        // $this->createdAt = new \DateTime();
+        // $this->closed = false;
     }  
    
 
@@ -34,21 +35,21 @@ class Bug {
     }
 
     /**
-     * Get the value of titre
+     * Get the value of title
      */ 
-    public function getTitre()
+    public function getTitle()
     {
-        return $this->titre;
+        return $this->title;
     }
 
     /**
-     * Set the value of titre
+     * Set the value of title
      *
      * @return  self
      */ 
-    public function setTitre($titre)
+    public function setTitle($title)
     {
-        $this->titre = $titre;
+        $this->title = $title;
 
         return $this;
     }

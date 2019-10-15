@@ -24,7 +24,7 @@ $bug = $manager->find($id);
 
 <h1>Détail d'un Bug</h1>
 
-    <h2><?=$bug->getTitre();?></h2>
+    <h2><?=$bug->getTitle();?></h2>
 
     <div><?=$bug->getDescription();?></div>
 

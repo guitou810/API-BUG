@@ -6,18 +6,20 @@ include_once('manager.php');
 class BugManager extends Manager
 {
 
-    private $bugs;
+    public function add(Bug $bug){
 
-    // public function getBugs()
-    // {
-    //     return $this->bugs;
-    // }
+        $dbh = $this->connectDb();  
 
-    // public function addBug(Bug $bug)
-    // {
+            $sql = "INSERT INTO bug (title, description, createdAt, closed) VALUES (:title, :description, :createdAt, :closed)";
+            $sth = $dbh->prepare($sql);
+            $sth->execute([
+                "title" => $bug->getTitle(),
+                "description" => $bug->getDescription(),
+                "createdAt" => date("Y-m-d H:i:s"),
+                "closed" => 0,
+            ]);        
 
-    //     $this->bugs[$bug->getId()] = $bug;
-    // }
+    }
 
     public function find($id)
     {
@@ -31,7 +33,7 @@ class BugManager extends Manager
 
         $bug = new Bug();
         $bug->setId($result["id"]);
-        $bug->setTitre($result["title"]);
+        $bug->setTitle($result["title"]);
         $bug->setDescription($result["description"]);
         $bug->setCreatedAt($result["createdAt"]);
         $bug->setClosed($result["closed"]);
@@ -53,7 +55,7 @@ class BugManager extends Manager
         foreach ($results as $result) {
             $bug = new Bug();
             $bug->setId($result["id"]);
-            $bug->setTitre($result["title"]);
+            $bug->setTitle($result["title"]);
             $bug->setDescription($result["description"]);
             $bug->setCreatedAt($result["createdAt"]);
             $bug->setClosed($result["closed"]);

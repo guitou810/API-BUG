@@ -24,6 +24,8 @@ $bugs = $bugManager->findAll();
 
 <h1>Liste des Bugs</h1>
 
+    <a href="add.php">Consigner un nouveau bug</a>
+
     <ul>
 
         <?php foreach($bugs as $bug){ ?>
@@ -31,7 +33,7 @@ $bugs = $bugManager->findAll();
             <li>
                 <div>
                     <a href="show.php?id=<?=$bug->getId();?>" >
-                        <?=$bug->getTitre();?>
+                        <?=$bug->getTitle();?>
                     </a>
                     <p><?=$bug->getCreatedAt();?></p>
                     <p><?=$bug->getClosed();?></p>
