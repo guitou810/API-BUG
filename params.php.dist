@@ -3,5 +3,6 @@
 define('DSN', 'mysql:host=localhost;dbname=...;charset=utf8');
 define('LOGIN', '...');
 define('MOT_DE_PASSE', '....');
+define('base_path', 'works/bugApp');
 
 ?>

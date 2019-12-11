@@ -21,6 +21,19 @@ class BugManager extends Manager
 
     }
 
+    public function persist(Bug $bug){
+
+        $dbh = $this->connectDb();  
+
+            $sql = "UPDATE bug SET closed =:closed WHERE id =:id";
+            $sth = $dbh->prepare($sql);
+            $sth->execute([
+                "id" => $bug->getId(),
+                "closed" => $bug->getClosed(),
+            ]);        
+
+    }
+
     public function find($id)
     {
 

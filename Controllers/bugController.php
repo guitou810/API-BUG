@@ -17,6 +17,29 @@ class bugController
 
     }
 
+    public function update(){
+
+        $id = $_POST["id"];
+
+        $closed = $_POST["closed"];
+
+        $bugManager = new BugManager();
+        
+        $bug = $bugManager->find($id);
+
+        $bug->setClosed($closed);
+
+        try{
+
+            $bugManager->persist($bug);
+            return $this->sendHttpResponse('ok', 200);
+        }
+        catch(Exception $e){
+            return $this->sendHttpResponse($e, 200);
+        }
+
+    }
+
     public function show($id){
 
         $manager = new BugManager();
