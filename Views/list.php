@@ -20,7 +20,13 @@ $bugs = $parameters['bugs'];
 
     <a href="/bug/add">Consigner un nouveau bug</a>
 
-    <ul>
+    <div class="filters">
+    
+        <input type="checkbox" name="unresolved">Afficher uniquement les filtres non-résolus
+    
+    </div>
+
+    <ul id="bugList">
 
         <?php foreach ($bugs as $bug) { ?>
 
@@ -34,9 +40,9 @@ $bugs = $parameters['bugs'];
 
                     <p><?= $bug->getCreatedAt(); ?></p>
 
-                    <p>
+                    <p class='closed'>
                         <?php
-                            if ($bug->getClosed() == 1) {
+                            if ($bug->getClosed() !== null) {
                                 echo "résolu";
                             } else {
                                 echo '<a class="trigger" href="#">Non-résolu</a>';
@@ -52,48 +58,8 @@ $bugs = $parameters['bugs'];
 
     </ul>
 
-    <script>
-        (function() {
-            var httpRequest;
-
-            let els = document.getElementsByClassName(".trigger");
-
-            Array.from(els).forEach((el) => {
-                el.addEventListener('click', makeRequest)
-            });
-
-            function makeRequest() {
-                httpRequest = new XMLHttpRequest();
-
-                if (!httpRequest) {
-                    alert('Abandon :( Impossible de créer une instance de XMLHTTP');
-                    return false;
-                }
-                httpRequest.onreadystatechange = updateBugState;
-
-                // params
-                let id = 1
-                var params = "id=".id
-
-                httpRequest.open('POST', 'bug/update');
-
-                httpRequest.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
-
-                httpRequest.send(params);
-            }
-
-            function alertContents() {
-                if (httpRequest.readyState === XMLHttpRequest.DONE) {
-                    if (httpRequest.status === 200) {
-
-                        document.getElementById("reponse").innerHTML = httpRequest.responseText
-
-                    } else {
-                        alert('Il y a eu un problème avec la requête.');
-                    }
-                }
-            }
-        })();
+    <script src="../Resources/ajax.js">
+        
     </script>
 
 </body>

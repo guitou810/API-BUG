@@ -20,6 +20,8 @@
 
     <div><?=$bug->getDescription();?></div>
 
+    <div><?=$bug->getClosed();?></div>
+
     <div><a href="/bug/list">Retout à la liste</a></div>
 
 </body>

@@ -21,15 +21,17 @@ class BugManager extends Manager
 
     }
 
-    public function persist(Bug $bug){
+    public function update(Bug $bug){
 
         $dbh = $this->connectDb();  
 
-            $sql = "UPDATE bug SET closed =:closed WHERE id =:id";
+            $sql = "UPDATE bug SET title = :title, description = :description, closed = :closed WHERE id =:id";
             $sth = $dbh->prepare($sql);
             $sth->execute([
                 "id" => $bug->getId(),
-                "closed" => $bug->getClosed(),
+                "title" => $bug->getTitle(),
+                "decription" => $bug->getDescription(),
+                "closed" => $bug->getClosed()->format("Y-m-d H:i:s"),
             ]);        
 
     }
@@ -77,6 +79,30 @@ class BugManager extends Manager
         }
 
         return $bugs;
+    }
+
+    public function findUnresolved(){
+
+        $dbh = $this->connectDb();
+
+        $results = $dbh->query('SELECT * FROM `bug` ORDER BY `id`', PDO::FETCH_ASSOC);
+
+        $bugs = [];
+
+        // Parcours des résultats
+        foreach ($results as $result) {
+            $bug = new Bug();
+            $bug->setId($result["id"]);
+            $bug->setTitle($result["title"]);
+            $bug->setDescription($result["description"]);
+            $bug->setCreatedAt($result["createdAt"]);
+            $bug->setClosed($result["closed"]);
+            
+            $bugs[] = $bug;
+        }
+
+        return $bugs;
+
     }
 
 
