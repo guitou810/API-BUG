@@ -12,7 +12,7 @@ $uri = substr($_SERVER['REQUEST_URI'], $length+1) ;
 
 switch(true) {
     
-    case (strpos($uri,'bug/list') == 0):
+    case (strcmp($uri,'bug/list') == 0):
         
         return (new bugController())->list();
         
@@ -47,15 +47,3 @@ switch(true) {
     echo 'Page non trouvée !';
     
 }
-
-// switch($uri) {
-    //     case '/bug/list':
-        //         return (new bugController())->list();
-        //         break;
-        //     case '/bug/add':
-            //         return (new bugController())->add();
-            //         break;
-            //     default:
-            //         http_response_code(404);
-            //         echo 'Page non trouvée !';
-            // }

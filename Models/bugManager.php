@@ -30,7 +30,7 @@ class BugManager extends Manager
             $sth->execute([
                 "id" => $bug->getId(),
                 "title" => $bug->getTitle(),
-                "decription" => $bug->getDescription(),
+                "description" => $bug->getDescription(),
                 "closed" => $bug->getClosed()->format("Y-m-d H:i:s"),
             ]);        
 

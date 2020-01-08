@@ -38,7 +38,7 @@ class bugController
     }
     
     public function update($id){
-        
+
         // 1. instancier
         
         $bugManager = new BugManager();
@@ -61,8 +61,6 @@ class bugController
 
         $headers = apache_request_headers();
 
-        // var_dump($headers);
-
         if(isset($headers['XMLHttpRequest']) && $headers['XMLHttpRequest'] == true){
 
             $response = [
@@ -78,15 +76,13 @@ class bugController
         
             header('Content-Type: application/json');
 
-            return $json;
+            echo $json;
 
         }else{
 
             // TODO: Réponse html
-        }
-        
-        
-        
+        }       
+                
     }
     
     public function show($id){
