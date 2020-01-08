@@ -12,7 +12,7 @@ $uri = substr($_SERVER['REQUEST_URI'], $length+1) ;
 
 switch(true) {
     
-    case (strcmp($uri,'bug/list') == 0):
+    case (strpos($uri,'bug/list') === 0):
         
         return (new bugController())->list();
         
