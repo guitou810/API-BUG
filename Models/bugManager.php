@@ -81,11 +81,19 @@ class BugManager extends Manager
         return $bugs;
     }
 
-    public function findUnresolved(){
+    public function findByClosed($bool){
 
         $dbh = $this->connectDb();
 
-        $results = $dbh->query('SELECT * FROM `bug` ORDER BY `id`', PDO::FETCH_ASSOC);
+        if($bool === false){
+
+            $results = $dbh->query('SELECT * FROM `bug` WHERE closed IS NULL ORDER BY `id`', PDO::FETCH_ASSOC);
+
+        }else{
+
+            $results = $dbh->query('SELECT * FROM `bug` WHERE closed IS NOT NULL ORDER BY `id`', PDO::FETCH_ASSOC);
+
+        }
 
         $bugs = [];
 
@@ -113,7 +121,7 @@ class BugManager extends Manager
             while (($buffer = fgets($handle, 4096)) !== false) { // TODO: 1 Finaliser la récupération des données issues d'un txt
                 list($id, $description) = explode(";", $buffer);
                 $bug = new Bug($id, $description);
-                $this->addBug($bug);
+                $this->add($bug);
         }
         if (!feof($handle)) {
             echo "Erreur: fgets() a échoué\n";

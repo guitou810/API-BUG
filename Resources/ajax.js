@@ -79,9 +79,7 @@
 
         httpRequest.onreadystatechange = displayBug;
 
-        let filter = (this.checked) ? 'true' : 'false';
-
-        var url = 'list?filter='+filter
+        let url = (this.checked) ? 'list?closed=false' : 'list';
 
         httpRequest.open('GET', url);
 
@@ -92,7 +90,9 @@
     }
 
     function displayBug() {
+
         if (httpRequest.readyState === XMLHttpRequest.DONE) {
+            
             if (httpRequest.status === 200) {
 
                 let json = JSON.parse(httpRequest.responseText);
@@ -106,9 +106,17 @@
 
                     json.bugs.forEach((bug)=>{
 
-                        // TODO: AddBug
-
                         let li = document.createElement('li');
+
+                        li.innerHTML = 
+                            `<a href='/bug/show/`+bug.id+`'>`
+                                +bug.title+
+                            `</a>
+                            <p>`+bug.createdAt+`</p>
+                            <p class="closed">
+                                <a class="trigger" href="#">Non-résolu</a>
+                            </p>`
+ 
                         ul.appendChild(li);
 
                     })

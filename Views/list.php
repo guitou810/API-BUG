@@ -21,9 +21,9 @@ $bugs = $parameters['bugs'];
     <a href="/bug/add">Consigner un nouveau bug</a>
 
     <div class="filters">
-    
-        <input type="checkbox" name="unresolved">Afficher uniquement les filtres non-résolus
-    
+
+        <input type="checkbox" name="unresolved">Afficher uniquement les bugs non-résolus
+
     </div>
 
     <ul id="bugList">
@@ -32,25 +32,21 @@ $bugs = $parameters['bugs'];
 
             <li class="bug" id="bug_<?= $bug->getId(); ?>">
 
-                <div>
+                <a href="/bug/show/<?= $bug->getId(); ?>">
+                    <?= $bug->getTitle(); ?>
+                </a>
 
-                    <a href="/bug/show/<?= $bug->getId(); ?>">
-                        <?= $bug->getTitle(); ?>
-                    </a>
+                <p><?= $bug->getCreatedAt(); ?></p>
 
-                    <p><?= $bug->getCreatedAt(); ?></p>
-
-                    <p class='closed'>
-                        <?php
-                            if ($bug->getClosed() !== null) {
-                                echo "résolu";
-                            } else {
-                                echo '<a class="trigger" href="#">Non-résolu</a>';
-                            }
-                            ?>
-                    </p>
-
-                </div>
+                <p class='closed'>
+                    <?php
+                    if ($bug->getClosed() !== null) {
+                        echo "résolu";
+                    } else {
+                        echo '<a class="trigger" href="#">Non-résolu</a>';
+                    }
+                    ?>
+                </p>
 
             </li>
 
@@ -59,7 +55,7 @@ $bugs = $parameters['bugs'];
     </ul>
 
     <script src="../Resources/ajax.js">
-        
+
     </script>
 
 </body>
