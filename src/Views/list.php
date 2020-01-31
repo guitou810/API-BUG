@@ -54,7 +54,7 @@ $bugs = $parameters['bugs'];
 
     </ul>
 
-    <script src="../Resources/ajax.js">
+    <script src="../../src/Resources/ajax.js">
 
     </script>
 

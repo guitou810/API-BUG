@@ -6,7 +6,16 @@ ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
 
-require('Controllers/bugController.php');
+require __DIR__ . '/vendor/autoload.php';
+
+use Monolog\Logger;
+use Monolog\Handler\StreamHandler;
+use BugApp\Controllers\bugController;
+
+// Create the logger
+$logger = new Logger('bug_logger');
+$logger->pushHandler(new StreamHandler(__DIR__.'/bug.log', Logger::DEBUG));
+// $logger->info('My logger is now ready');
 
 $length = strlen(base_path);
 

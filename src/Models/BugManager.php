@@ -1,7 +1,9 @@
 <?php
 
-include_once('bug.php');
-include_once('manager.php');
+namespace BugApp\Models;
+
+use BugApp\Models\Bug;
+use BugApp\Manager;
 
 class BugManager extends Manager
 {
@@ -10,13 +12,12 @@ class BugManager extends Manager
 
         $dbh = $this->connectDb();  
 
-            $sql = "INSERT INTO bug (title, description, createdAt, closed) VALUES (:title, :description, :createdAt, :closed)";
+            $sql = "INSERT INTO bug (title, description, closed) VALUES (:title, :description, :closed)";
             $sth = $dbh->prepare($sql);
             $sth->execute([
                 "title" => $bug->getTitle(),
                 "description" => $bug->getDescription(),
-                "createdAt" => date("Y-m-d H:i:s"),
-                "closed" => 0,
+                "closed" => null,
             ]);        
 
     }
@@ -42,9 +43,9 @@ class BugManager extends Manager
         $dbh = $this->connectDb();
 
         $sth = $dbh->prepare('SELECT * FROM bug WHERE id = :id');
-        $sth->bindParam(':id', $id, PDO::PARAM_INT);
+        $sth->bindParam(':id', $id, \PDO::PARAM_INT);
         $sth->execute();
-        $result = $sth->fetch(PDO::FETCH_ASSOC);
+        $result = $sth->fetch(\PDO::FETCH_ASSOC);
 
         $bug = new Bug();
         $bug->setId($result["id"]);
@@ -62,7 +63,7 @@ class BugManager extends Manager
 
         $dbh = $this->connectDb();
 
-        $results = $dbh->query('SELECT * FROM `bug` ORDER BY `id`', PDO::FETCH_ASSOC);
+        $results = $dbh->query('SELECT * FROM `bug` ORDER BY `id`', \PDO::FETCH_ASSOC);
 
         $bugs = [];
 
@@ -87,11 +88,11 @@ class BugManager extends Manager
 
         if($bool === false){
 
-            $results = $dbh->query('SELECT * FROM `bug` WHERE closed IS NULL ORDER BY `id`', PDO::FETCH_ASSOC);
+            $results = $dbh->query('SELECT * FROM `bug` WHERE closed IS NULL ORDER BY `id`', \PDO::FETCH_ASSOC);
 
         }else{
 
-            $results = $dbh->query('SELECT * FROM `bug` WHERE closed IS NOT NULL ORDER BY `id`', PDO::FETCH_ASSOC);
+            $results = $dbh->query('SELECT * FROM `bug` WHERE closed IS NOT NULL ORDER BY `id`', \PDO::FETCH_ASSOC);
 
         }
 

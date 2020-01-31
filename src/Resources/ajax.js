@@ -48,7 +48,7 @@
                     let id = json.id
                     let html_id = "bug_"+id
                     let bug = document.getElementById(html_id)
-                    let p = bug.querySelector("div p.closed")
+                    let p = bug.querySelector("p.closed")
                     p.innerHTML = 'resolu'
                 }
 

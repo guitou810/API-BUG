@@ -1,6 +1,9 @@
 <?php
 
-require_once('Models/bugManager.php');
+namespace BugApp\Controllers;
+
+use BugApp\Models\BugManager;
+use BugApp\Models\Bug;
 
 class bugController
 {
@@ -44,7 +47,7 @@ class bugController
 
             $bugs = $bugManager->findAll();
 
-            $content = $this->render('Views/list', ['bugs' => $bugs]);
+            $content = $this->render('src/Views/list', ['bugs' => $bugs]);
 
             return $this->sendHttpResponse($content, 200);
         }
@@ -103,7 +106,7 @@ class bugController
 
         $bug = $manager->find($id);
 
-        $content = $this->render('Views/show', ['bug' => $bug]);
+        $content = $this->render('src/Views/show', ['bug' => $bug]);
 
         return $this->sendHttpResponse($content, 200);
     }
@@ -126,7 +129,7 @@ class bugController
             header('Location: /bug/list');
         } else {
 
-            $content = $this->render('Views/add', []);
+            $content = $this->render('src/Views/add', []);
 
             return $this->sendHttpResponse($content, 200);
         }

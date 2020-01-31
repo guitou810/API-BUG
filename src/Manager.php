@@ -1,5 +1,7 @@
 <?php
 
+namespace BugApp;
+
 class Manager 
 {
 
@@ -13,7 +15,7 @@ class Manager
     
             $dbh = new \PDO(DSN, LOGIN, MOT_DE_PASSE, $pdo_options);
                         
-            } catch (Exception $e){
+            } catch (\Exception $e){
 
                 die('Erreur : ' . $e->getMessage());
 
