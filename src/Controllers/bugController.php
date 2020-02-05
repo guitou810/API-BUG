@@ -4,6 +4,7 @@ namespace BugApp\Controllers;
 
 use BugApp\Models\BugManager;
 use BugApp\Models\Bug;
+use GuzzleHttp\Client;
 
 class bugController
 {
@@ -17,10 +18,9 @@ class bugController
 
         if (isset($headers['XMLHttpRequest']) && $headers['XMLHttpRequest'] == 'true') {
 
-             if (isset($_GET['closed']) && $_GET['closed'] == 'false') {
+            if (isset($_GET['closed']) && $_GET['closed'] == 'false') {
 
                 $bugs = $bugManager->findByClosed(false);
-
             } else {
 
                 $bugs = $bugManager->findAll();
@@ -42,7 +42,6 @@ class bugController
             header('Content-Type: application/json');
 
             echo $json;
-
         } else {
 
             $bugs = $bugManager->findAll();
@@ -119,10 +118,27 @@ class bugController
             $bugManager = new BugManager();
 
             $bug = new Bug();
-
             $bug->setTitle($_POST["title"]);
-
             $bug->setDescription($_POST["description"]);
+            $bug->setDomain($_POST["domain"]);
+
+            // Recherche de l'IP
+
+            $client = new Client([
+                'base_uri' => 'http://ip-api.com',
+            ]);
+
+            $response = $client->request('GET', '/json/google.com', ['debug' => true]);
+
+            // echo $response->getStatusCode();
+            // echo $response->getHeader('content-type')[0];
+            $body = $response->getBody();
+            $remainingBytes = $body->getContents();
+            $values = json_decode($remainingBytes);
+
+            $ip = $values->query;
+
+            $bug->setIp($ip);
 
             $bugManager->add($bug);
 

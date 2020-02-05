@@ -9,6 +9,8 @@ class Bug {
     public $description;
     public $createdAt;
     public $closed;
+    public $domain;
+    public $ip;
     
     function __construct() {
         // $this->createdAt = new \DateTime();
@@ -112,6 +114,46 @@ class Bug {
     public function setClosed($closed)
     {
         $this->closed = $closed;
+
+        return $this;
+    }
+
+    /**
+     * Get the value of domain
+     */ 
+    public function getDomain()
+    {
+        return $this->domain;
+    }
+
+    /**
+     * Set the value of domain
+     *
+     * @return  self
+     */ 
+    public function setDomain($domain)
+    {
+        $this->domain = $domain;
+
+        return $this;
+    }
+
+    /**
+     * Get the value of ip
+     */ 
+    public function getIp()
+    {
+        return $this->ip;
+    }
+
+    /**
+     * Set the value of ip
+     *
+     * @return  self
+     */ 
+    public function setIp($ip)
+    {
+        $this->ip = $ip;
 
         return $this;
     }
