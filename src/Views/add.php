@@ -45,11 +45,11 @@
             <input type="text" class="form-control" name="title" id="titre">
         </div>
         <div class="form-group">
-            <label for="exampleInputPassword1">description</label>
+            <label for="description">description</label>
             <textarea class="form-control" name="description" id="description"></textarea>
         </div>
         <div class="form-group">
-            <label for="doamin">Domaine</label>
+            <label for="domain">Domaine</label>
             <input type="text" class="form-control" name="domain" id="domain">
         </div>
         <button type="submit" name="submit" class="btn btn-primary">Consigner</button>

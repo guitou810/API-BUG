@@ -61,22 +61,24 @@ class bugController
 
         $bug = $bugManager->find($id);
 
-        // 2. mettre à jour l'instance
-
-        if (isset($_POST["closed"]) && $_POST["closed"] == 1) {
-
-            $bug->setClosed(new \DateTime());
-        }
-
-        // 3. persister les données
-
-        $bugManager->update($bug);
-
-        // 4. construire la réponse json
+        // 2. Detecter les requetes XHR
 
         $headers = apache_request_headers();
 
         if (isset($headers['XMLHttpRequest']) && $headers['XMLHttpRequest'] == true) {
+
+            // 3. mettre à jour l'instance
+
+            if (isset($_POST["closed"]) && $_POST["closed"] == 1) {
+
+                $bug->setClosed(new \DateTime());
+            }
+
+            // 4. persister les données
+
+            $bugManager->update($bug);
+
+            // 5. Réponse JSON
 
             $response = [
                 'success' => true,
@@ -85,7 +87,7 @@ class bugController
 
             $json = json_encode($response);
 
-            // 5. envoyer la réponse
+            // 6. envoyer la réponse
 
             http_response_code(200);
 
@@ -94,7 +96,40 @@ class bugController
             echo $json;
         } else {
 
-            // TODO: Réponse html
+            if (!empty($_POST)) {
+
+                // 3. mettre à jour l'instance
+
+                if (isset($_POST["title"])) {
+                    $bug->setTitle($_POST["title"]);
+                }
+
+                if (isset($_POST["description"])) {
+                    $bug->setDescription($_POST["description"]);
+                }
+
+                if (isset($_POST["domain"])) {
+                    $bug->setDomain($_POST["domain"]);
+                }
+
+                if (isset($_POST["closed"]) && $_POST["closed"] == 1) {
+                    $bug->setClosed(new \DateTime());
+                }
+
+                // 4. persister les données
+
+                $bugManager->update($bug);
+
+                $content = $this->render('src/Views/show', ['bug' => $bug]);
+
+            }else{
+
+                $content = $this->render('src/Views/update', ['bug' => $bug]);
+            }
+
+            // 5. Réponse HTML
+
+            return $this->sendHttpResponse($content, 200);
         }
     }
 

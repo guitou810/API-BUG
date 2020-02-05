@@ -22,7 +22,7 @@
 
     <div><?=$bug->getDomain();?></div>
 
-    <div><?=$bug->getClosed();?></div>
+    <div><?=$bug->getClosed()->format("Y-m-d H:i:s");?></div>
 
     <div><a href="/bug/list">Retout à la liste</a></div>
 

@@ -113,7 +113,9 @@ class Bug {
      */ 
     public function setClosed($closed)
     {
-        $this->closed = $closed;
+        $date = \DateTime::createFromFormat('Y-m-d H:i:s', $closed);
+        
+        $this->closed = $date;
 
         return $this;
     }
