@@ -18,13 +18,23 @@
 
     <h2><?=$bug->getTitle();?></h2>
 
-    <div><?=$bug->getDescription();?></div>
+    <div>Description : <?=$bug->getDescription();?></div>
 
-    <div><?=$bug->getDomain();?></div>
+    <div>Domaine : <?=$bug->getDomain();?></div>
 
-    <div><?=$bug->getClosed()->format("Y-m-d H:i:s");?></div>
+    <div>IP : <?=$bug->getIp();?></div>
 
-    <div><a href="/bug/list">Retout à la liste</a></div>
+    <div>
+    
+        <?php if($bug->getClosed() != null){
+
+            echo $bug->getClosed()->format("Y-m-d H:i:s");
+        }
+        ?>
+        
+    </div>
+
+    <div><a href="/bug/list">Retour à la liste</a></div>
 
 </body>
 

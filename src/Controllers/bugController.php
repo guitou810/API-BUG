@@ -163,7 +163,7 @@ class bugController
                 'base_uri' => 'http://ip-api.com',
             ]);
 
-            $response = $client->request('GET', '/json/google.com', ['debug' => true]);
+            $response = $client->request('GET', '/json/'.$_POST["domain"], ['debug' => true]);
 
             // echo $response->getStatusCode();
             // echo $response->getHeader('content-type')[0];
