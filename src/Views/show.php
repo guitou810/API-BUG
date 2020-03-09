@@ -22,6 +22,8 @@
 
     <div>Domaine : <?=$bug->getDomain();?></div>
 
+    <div>URL : <?=$bug->getUrl();?></div>
+
     <div>IP : <?=$bug->getIp();?></div>
 
     <div>

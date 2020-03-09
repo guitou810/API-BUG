@@ -10,10 +10,11 @@ class Bug {
     public $createdAt;
     public $closed;
     public $domain;
+    public $url;
     public $ip;
     
     function __construct() {
-        // $this->createdAt = new \DateTime();
+        $this->createdAt = new \DateTime();
         // $this->closed = false;
     }  
    
@@ -156,6 +157,26 @@ class Bug {
     public function setIp($ip)
     {
         $this->ip = $ip;
+
+        return $this;
+    }
+
+    /**
+     * Get the value of url
+     */ 
+    public function getUrl()
+    {
+        return $this->url;
+    }
+
+    /**
+     * Set the value of url
+     *
+     * @return  self
+     */ 
+    public function setUrl($url)
+    {
+        $this->url = $url;
 
         return $this;
     }

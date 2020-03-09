@@ -12,14 +12,16 @@ class BugManager extends Manager
 
         $dbh = $this->connectDb();  
 
-            $sql = "INSERT INTO bug (title, description, closed, domain, ip) VALUES (:title, :description, :closed, :domain, :ip)";
+            $sql = "INSERT INTO bug (title, description, closed, domain, ip, url, createdAt) VALUES (:title, :description, :closed, :domain, :ip, :url, :createdAt)";
             $sth = $dbh->prepare($sql);
             $sth->execute([
                 "title" => $bug->getTitle(),
                 "description" => $bug->getDescription(),
                 "closed" => null,
                 "domain" => $bug->getDomain(),
+                "url" => $bug->getUrl(),
                 "ip" => $bug->getIp(),
+                "createdAt" => $bug->getCreatedAt()->format("Y-m-d H:i:s")
             ]);        
 
     }
@@ -34,7 +36,7 @@ class BugManager extends Manager
                 $bugGetClosed = null;
             }
 
-            $sql = "UPDATE bug SET title = :title, description = :description, closed = :closed, domain = :domain, ip = :ip WHERE id =:id";
+            $sql = "UPDATE bug SET title = :title, description = :description, closed = :closed, domain = :domain, ip = :ip, url = :url WHERE id =:id";
             $sth = $dbh->prepare($sql);
             $sth->execute([
                 "id" => $bug->getId(),
@@ -43,6 +45,7 @@ class BugManager extends Manager
                 "closed" => $bugGetClosed,
                 "domain" => $bug->getDomain(),
                 "ip" => $bug->getIp(),
+                "url" => $bug->getUrl(),
             ]);        
 
     }
@@ -64,6 +67,7 @@ class BugManager extends Manager
         $bug->setCreatedAt($result["createdAt"]);
         $bug->setClosed($result["closed"]);
         $bug->setDomain($result["domain"]);
+        $bug->setUrl($result["url"]);
         $bug->setIp($result["ip"]);
 
         return $bug;
@@ -88,6 +92,7 @@ class BugManager extends Manager
             $bug->setCreatedAt($result["createdAt"]);
             $bug->setClosed($result["closed"]);
             $bug->setDomain($result["domain"]);
+            $bug->setUrl($result["url"]);
             $bug->setIp($result["ip"]);
             
             $bugs[] = $bug;
@@ -121,6 +126,7 @@ class BugManager extends Manager
             $bug->setCreatedAt($result["createdAt"]);
             $bug->setClosed($result["closed"]);
             $bug->setDomain($result["domain"]);
+            $bug->setUrl($result["url"]);
             $bug->setIp($result["ip"]);
             
             $bugs[] = $bug;

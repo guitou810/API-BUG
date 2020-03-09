@@ -94,7 +94,6 @@ class bugController
             header('Content-Type: application/json');
 
             echo $json;
-            
         } else {
 
             if (!empty($_POST)) {
@@ -109,8 +108,38 @@ class bugController
                     $bug->setDescription($_POST["description"]);
                 }
 
-                if (isset($_POST["domain"])) {
-                    $bug->setDomain($_POST["domain"]);
+                if (isset($_POST["url"])) {
+                    $url_array = parse_url($_POST["url"]);
+
+                    if (isset($url_array['host'])) {
+
+                        // Traitement du domaine 
+
+                        $bug->setDomain($url_array['host']);
+
+                        // Recherche de l'IP
+
+                        $client = new Client([
+                            'base_uri' => 'http://ip-api.com',
+                        ]);
+
+                        $response = $client->request('GET', '/json/' . $url_array['host'], ['debug' => true]);
+
+                        // echo $response->getStatusCode();
+                        // echo $response->getHeader('content-type')[0];
+                        $body = $response->getBody();
+                        $remainingBytes = $body->getContents();
+                        $values = json_decode($remainingBytes);
+
+                        $ip = $values->query;
+
+                        $bug->setIp($ip);
+                    }
+
+                    if (isset($url_array['path'])) {
+
+                        $bug->setUrl($url_array['path']);
+                    }
                 }
 
                 if (isset($_POST["closed"]) && $_POST["closed"] == 1) {
@@ -122,8 +151,7 @@ class bugController
                 $bugManager->update($bug);
 
                 $content = $this->render('src/Views/show', ['bug' => $bug]);
-
-            }else{
+            } else {
 
                 $content = $this->render('src/Views/update', ['bug' => $bug]);
             }
@@ -156,25 +184,39 @@ class bugController
             $bug = new Bug();
             $bug->setTitle($_POST["title"]);
             $bug->setDescription($_POST["description"]);
-            $bug->setDomain($_POST["domain"]);
 
-            // Recherche de l'IP
+            // Découpage de l'url
 
-            $client = new Client([
-                'base_uri' => 'http://ip-api.com',
-            ]);
+            $url_array = parse_url($_POST["url"]);
 
-            $response = $client->request('GET', '/json/'.$_POST["domain"], ['debug' => true]);
+            if (isset($url_array['host'])) {
 
-            // echo $response->getStatusCode();
-            // echo $response->getHeader('content-type')[0];
-            $body = $response->getBody();
-            $remainingBytes = $body->getContents();
-            $values = json_decode($remainingBytes);
+                // Traitement du domaine 
 
-            $ip = $values->query;
+                $bug->setDomain($url_array['host']);
 
-            $bug->setIp($ip);
+                // Recherche de l'IP
+
+                $client = new Client([
+                    'base_uri' => 'http://ip-api.com',
+                ]);
+
+                $response = $client->request('GET', '/json/' . $url_array['host'], ['debug' => true]);
+
+                // echo $response->getStatusCode();
+                // echo $response->getHeader('content-type')[0];
+                $body = $response->getBody();
+                $remainingBytes = $body->getContents();
+                $values = json_decode($remainingBytes);
+
+                $ip = $values->query;
+
+                $bug->setIp($ip);
+            }
+
+            if (isset($url_array['path'])) {
+                $bug->setUrl('path');
+            }
 
             $bugManager->add($bug);
 

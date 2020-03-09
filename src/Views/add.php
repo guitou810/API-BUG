@@ -49,8 +49,8 @@
             <textarea class="form-control" name="description" id="description"></textarea>
         </div>
         <div class="form-group">
-            <label for="domain">Domaine</label>
-            <input type="text" class="form-control" name="domain" id="domain">
+            <label for="url">URL</label>
+            <input type="text" class="form-control" name="url" id="url">
         </div>
         <button type="submit" name="submit" class="btn btn-primary">Consigner</button>
     </form>

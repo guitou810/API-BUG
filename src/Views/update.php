@@ -28,8 +28,8 @@
             <textarea class="form-control" name="description" id="description"><?=$bug->getDescription();?></textarea>
         </div>
         <div class="form-group">
-            <label for="domain">Domaine</label>
-            <input type="text" class="form-control" name="domain" id="domain" value="<?=$bug->getDomain();?>">
+            <label for="url">URL</label>
+            <input type="text" class="form-control" name="url" id="domain" value="<?="http://".$bug->getDomain().$bug->getUrl();?>">
         </div>
         <button type="submit" name="submit" class="btn btn-primary">Consigner</button>
     </form>
