@@ -12,8 +12,9 @@ CREATE TABLE `bug` (
   `closed` datetime DEFAULT NULL,
   `domain` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
   `ip` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `url` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 
--- 2020-03-04 17:52:27
+-- 2020-03-09 17:33:15
