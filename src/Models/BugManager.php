@@ -28,13 +28,19 @@ class BugManager extends Manager
 
         $dbh = $this->connectDb();  
 
+            if($bug->getClosed() != null){
+                $bugGetClosed = $bug->getClosed()->format("Y-m-d H:i:s");
+            }else{
+                $bugGetClosed = null;
+            }
+
             $sql = "UPDATE bug SET title = :title, description = :description, closed = :closed, domain = :domain, ip = :ip WHERE id =:id";
             $sth = $dbh->prepare($sql);
             $sth->execute([
                 "id" => $bug->getId(),
                 "title" => $bug->getTitle(),
                 "description" => $bug->getDescription(),
-                "closed" => $bug->getClosed()->format("Y-m-d H:i:s"),
+                "closed" => $bugGetClosed,
                 "domain" => $bug->getDomain(),
                 "ip" => $bug->getIp(),
             ]);        

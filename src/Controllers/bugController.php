@@ -94,6 +94,7 @@ class bugController
             header('Content-Type: application/json');
 
             echo $json;
+            
         } else {
 
             if (!empty($_POST)) {
