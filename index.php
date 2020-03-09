@@ -8,53 +8,50 @@ error_reporting(E_ALL);
 
 require __DIR__ . '/vendor/autoload.php';
 
-use Monolog\Logger;
-use Monolog\Handler\StreamHandler;
 use BugApp\Controllers\bugController;
 
-// Create the logger
-$logger = new Logger('bug_logger');
-$logger->pushHandler(new StreamHandler(__DIR__.'/bug.log', Logger::DEBUG));
-// $logger->info('My logger is now ready');
 
 $length = strlen(base_path);
 
-$uri = substr($_SERVER['REQUEST_URI'], $length+1) ;
+$uri = substr($_SERVER['REQUEST_URI'], $length + 1);
 
-switch(true) {
-    
-    case (strpos($uri,'bug/list') === 0):
-        
+$method = $_SERVER['REQUEST_METHOD'];
+
+switch (true) {
+
+    case (strpos($uri, 'bug/list') === 0):
+
         return (new bugController())->list();
-        
-    break;
-    
-    case preg_match('#^bug/show/(\d+)$#', $uri, $matches):
-        
+
+        break;
+
+    case preg_match('#^bug/(\d+)$#', $uri, $matches) && $method == 'GET':
+
         $id = $matches[1];
-        
+
         return (new bugController())->show($id);
-        
-    break;
-    
+
+        break;
+
     case ($uri == 'bug/add'):
-        
+
         return (new bugController())->add();
-        
-    break;
-    
-    case preg_match('#^bug/update/(\d+)$#', $uri, $matches):
-        
+
+        break;
+
+case preg_match('#^bug/(\d+)$#', $uri, $matches)  && $method == 'PATCH':
+
         $id = $matches[1];
-        
+
         return (new bugController())->update($id);
-        
-    break;
-    
+
+        break;
+
     default:
-    
-    http_response_code(404);
-    
-    echo 'Page non trouvée !';
-    
+
+        http_response_code(404);
+
+        header('Content-Type: application/json');
+
+        echo 'Page non trouvée !';
 }

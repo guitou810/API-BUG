@@ -14,180 +14,42 @@ class bugController
 
         $bugManager = new BugManager();
 
-        $headers = apache_request_headers();
+        if (isset($_GET['closed']) && $_GET['closed'] == 'false') {
 
-        if (isset($headers['XMLHttpRequest']) && $headers['XMLHttpRequest'] == 'true') {
-
-            if (isset($_GET['closed']) && $_GET['closed'] == 'false') {
-
-                $bugs = $bugManager->findByClosed(false);
-            } else {
-
-                $bugs = $bugManager->findAll();
-            }
-
-            $response = [
-                'success' => true,
-                'bugs' => $bugs,
-            ];
-
-            $json = json_encode($response);
-
-            //var_dump($json);
-
-            // 5. envoyer la réponse
-
-            http_response_code(200);
-
-            header('Content-Type: application/json');
-
-            echo $json;
+            $bugs = $bugManager->findByClosed(false);
         } else {
 
             $bugs = $bugManager->findAll();
-
-            $content = $this->render('src/Views/list', ['bugs' => $bugs]);
-
-            return $this->sendHttpResponse($content, 200);
         }
+
+        $json = json_encode($bugs);
+
+        return $this->sendHttpResponse($json, 200);
     }
 
     public function update($id)
     {
 
-        // 1. instancier
-
         $bugManager = new BugManager();
 
         $bug = $bugManager->find($id);
 
-        // 2. Detecter les requetes XHR
+        // Récupérer les données en PATCH
 
-        $headers = apache_request_headers();
+        parse_str(file_get_contents('php://input'), $_PATCH);
 
-        if (isset($headers['XMLHttpRequest']) && $headers['XMLHttpRequest'] == true) {
+        // var_dump($_PATCH);die;
 
-            // 3. mettre à jour l'instance
-
-            if (isset($_POST["closed"]) && $_POST["closed"] == 1) {
-
-                $bug->setClosed(new \DateTime());
-            }
-
-            // 4. persister les données
-
-            $bugManager->update($bug);
-
-            // 5. Réponse JSON
-
-            $response = [
-                'success' => true,
-                'id' => $bug->getId(),
-            ];
-
-            $json = json_encode($response);
-
-            // 6. envoyer la réponse
-
-            http_response_code(200);
-
-            header('Content-Type: application/json');
-
-            echo $json;
-        } else {
-
-            if (!empty($_POST)) {
-
-                // 3. mettre à jour l'instance
-
-                if (isset($_POST["title"])) {
-                    $bug->setTitle($_POST["title"]);
-                }
-
-                if (isset($_POST["description"])) {
-                    $bug->setDescription($_POST["description"]);
-                }
-
-                if (isset($_POST["url"])) {
-                    $url_array = parse_url($_POST["url"]);
-
-                    if (isset($url_array['host'])) {
-
-                        // Traitement du domaine 
-
-                        $bug->setDomain($url_array['host']);
-
-                        // Recherche de l'IP
-
-                        $client = new Client([
-                            'base_uri' => 'http://ip-api.com',
-                        ]);
-
-                        $response = $client->request('GET', '/json/' . $url_array['host'], ['debug' => true]);
-
-                        // echo $response->getStatusCode();
-                        // echo $response->getHeader('content-type')[0];
-                        $body = $response->getBody();
-                        $remainingBytes = $body->getContents();
-                        $values = json_decode($remainingBytes);
-
-                        $ip = $values->query;
-
-                        $bug->setIp($ip);
-                    }
-
-                    if (isset($url_array['path'])) {
-
-                        $bug->setUrl($url_array['path']);
-                    }
-                }
-
-                if (isset($_POST["closed"]) && $_POST["closed"] == 1) {
-                    $bug->setClosed(new \DateTime());
-                }
-
-                // 4. persister les données
-
-                $bugManager->update($bug);
-
-                $content = $this->render('src/Views/show', ['bug' => $bug]);
-            } else {
-
-                $content = $this->render('src/Views/update', ['bug' => $bug]);
-            }
-
-            // 5. Réponse HTML
-
-            return $this->sendHttpResponse($content, 200);
+        if (isset($_PATCH["title"])) {
+            $bug->setTitle($_PATCH["title"]);
         }
-    }
 
-    public function show($id)
-    {
+        if (isset($_PATCH["description"])) {
+            $bug->setDescription($_PATCH["description"]);
+        }
 
-        $manager = new BugManager();
-
-        $bug = $manager->find($id);
-
-        $content = $this->render('src/Views/show', ['bug' => $bug]);
-
-        return $this->sendHttpResponse($content, 200);
-    }
-
-    public function add()
-    {
-
-        if (isset($_POST['submit'])) {
-
-            $bugManager = new BugManager();
-
-            $bug = new Bug();
-            $bug->setTitle($_POST["title"]);
-            $bug->setDescription($_POST["description"]);
-
-            // Découpage de l'url
-
-            $url_array = parse_url($_POST["url"]);
+        if (isset($_PATCH["url"])) {
+            $url_array = parse_url($_PATCH["url"]);
 
             if (isset($url_array['host'])) {
 
@@ -215,39 +77,91 @@ class bugController
             }
 
             if (isset($url_array['path'])) {
-                $bug->setUrl('path');
+
+                $bug->setUrl($url_array['path']);
             }
-
-            $bugManager->add($bug);
-
-            header('Location: /bug/list');
-        } else {
-
-            $content = $this->render('src/Views/add', []);
-
-            return $this->sendHttpResponse($content, 200);
         }
+
+        if (isset($_PATCH["closed"]) && $_PATCH["closed"] == 1) {
+            $bug->setClosed(new \DateTime());
+        }
+
+        // 4. persister les données
+
+        $bugManager->update($bug);
+
+        $content = json_encode($bug);
+
+        return $this->sendHttpResponse($content, 200);
+
     }
 
-    public function render($templatePath, $parameters)
+    public function show($id)
     {
 
-        $templatePath = $templatePath . '.php';
+        $manager = new BugManager();
 
-        ob_start();
+        $bug = $manager->find($id);
 
-        $parameters;
+        $json = json_encode($bug);
 
-        require($templatePath);
-
-        return ob_get_clean();
+        return $this->sendHttpResponse($json, 200);
     }
+
+    public function add()
+    {
+        $bugManager = new BugManager();
+
+        $bug = new Bug();
+        $bug->setTitle($_POST["title"]);
+        $bug->setDescription($_POST["description"]);
+
+        // Découpage de l'url
+
+        $url_array = parse_url($_POST["url"]);
+
+        if (isset($url_array['host'])) {
+
+            // Traitement du domaine 
+
+            $bug->setDomain($url_array['host']);
+
+            // Recherche de l'IP
+
+            $client = new Client([
+                'base_uri' => 'http://ip-api.com',
+            ]);
+
+            $response = $client->request('GET', '/json/' . $url_array['host'], ['debug' => true]);
+
+            // echo $response->getStatusCode();
+            // echo $response->getHeader('content-type')[0];
+            $body = $response->getBody();
+            $remainingBytes = $body->getContents();
+            $values = json_decode($remainingBytes);
+
+            $ip = $values->query;
+
+            $bug->setIp($ip);
+        }
+
+        if (isset($url_array['path'])) {
+            $bug->setUrl('path');
+        }
+
+        $bugManager->add($bug);
+
+        $json = json_encode($bug);
+
+        return $this->sendHttpResponse($json, 201);
+    }
+
 
     public static function sendHttpResponse($content, $code = 200)
     {
         http_response_code($code);
 
-        header('Content-Type: text/html');
+        header('Content-Type: application/json');
 
         echo $content;
     }
