@@ -112,10 +112,17 @@ class Bug {
      *
      * @return  self
      */ 
-    public function setClosed($closed)
+    public function setClosed($date_string)
     {
-        $date = \DateTime::createFromFormat('Y-m-d H:i:s', $closed);
         
+        if($date_string == null){
+
+            $date = new \DateTime();
+
+        }else{
+            $date = \DateTime::createFromFormat('Y-m-d H:i:s', $date_string);
+        } 
+
         $this->closed = $date;
 
         return $this;

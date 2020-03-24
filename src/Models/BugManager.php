@@ -22,13 +22,19 @@ class BugManager extends Manager
                 "url" => $bug->getUrl(),
                 "ip" => $bug->getIp(),
                 "createdAt" => $bug->getCreatedAt()->format("Y-m-d H:i:s")
-            ]);        
+            ]); 
+            
+            $id = $dbh->lastInsertId();
+
+            return $id;
 
     }
 
     public function update(Bug $bug){
 
         $dbh = $this->connectDb();  
+
+            // var_dump($bug->getClosed() );die;
 
             if($bug->getClosed() != null){
                 $bugGetClosed = $bug->getClosed()->format("Y-m-d H:i:s");
@@ -68,9 +74,10 @@ class BugManager extends Manager
         $bug->setClosed($result["closed"]);
         $bug->setDomain($result["domain"]);
         $bug->setUrl($result["url"]);
-        $bug->setIp($result["ip"]);
+        $bug->setIp($result["ip"]);      
 
         return $bug;
+        
     }
 
 

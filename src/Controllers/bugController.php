@@ -51,6 +51,8 @@ class bugController
         if (isset($_PATCH["url"])) {
             $url_array = parse_url($_PATCH["url"]);
 
+            // var_dump($url_array);die;
+
             if (isset($url_array['host'])) {
 
                 // Traitement du domaine 
@@ -82,8 +84,10 @@ class bugController
             }
         }
 
-        if (isset($_PATCH["closed"]) && $_PATCH["closed"] == 1) {
-            $bug->setClosed(new \DateTime());
+        
+        if (isset($_PATCH["closed"]) && $_PATCH["closed"] == '1') {
+
+            $bug->setClosed(null);
         }
 
         // 4. persister les données
@@ -149,7 +153,11 @@ class bugController
             $bug->setUrl('path');
         }
 
-        $bugManager->add($bug);
+        $id = $bugManager->add($bug);
+
+        // Set Bug Id
+
+        $bug->setId($id);
 
         $json = json_encode($bug);
 

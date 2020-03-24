@@ -17,9 +17,11 @@ $uri = substr($_SERVER['REQUEST_URI'], $length + 1);
 
 $method = $_SERVER['REQUEST_METHOD'];
 
+// var_dump($method);die;
+
 switch (true) {
 
-    case (strpos($uri, 'bug/list') === 0):
+    case preg_match('#^bug$#', $uri) && $method == 'GET':
 
         return (new bugController())->list();
 
@@ -33,13 +35,13 @@ switch (true) {
 
         break;
 
-    case ($uri == 'bug/add'):
+    case preg_match('#^bug$#', $uri) && $method == 'POST':
 
         return (new bugController())->add();
 
         break;
 
-case preg_match('#^bug/(\d+)$#', $uri, $matches)  && $method == 'PATCH':
+    case preg_match('#^bug/(\d+)$#', $uri, $matches)  && $method == 'PATCH':
 
         $id = $matches[1];
 
