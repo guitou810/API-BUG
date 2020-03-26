@@ -51,9 +51,11 @@ switch (true) {
 
     default:
 
+    // var_dump("test");die;
+
         http_response_code(404);
 
         header('Content-Type: application/json');
 
-        echo 'Page non trouvée !';
+        echo json_encode('Page non trouvée !');
 }

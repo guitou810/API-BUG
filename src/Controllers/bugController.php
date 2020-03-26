@@ -114,6 +114,7 @@ class bugController
 
     public function add()
     {
+        
         $bugManager = new BugManager();
 
         $bug = new Bug();
