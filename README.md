@@ -10,6 +10,7 @@ TP CCI
         Avoir le même base_path que moi dans params sinon swagger ne va pas fonctionner.
         Conseil: git clone l'application dans xammpp/dasboard/
                  créer un dossier works et y placer l'application.
+        Lancer Xampp
 
 2ème étape :
         Lancer Swagger pour tester les requêtes API :
