@@ -16,16 +16,21 @@ $length = strlen(base_path);
 $uri = substr($_SERVER['REQUEST_URI'], $length + 1);
 
 $method = $_SERVER['REQUEST_METHOD'];
+$data =  parse_str(file_get_contents('php://input'), $_PATCH); 
 
 // var_dump($method);die;
 
 switch (true) {
 
+    // LIST
+
     case preg_match('#^bug$#', $uri) && $method == 'GET':
 
-        return (new bugController())->list();
+        return (new bugController())->list_Bug();
 
         break;
+
+    // SHOW 
 
     case preg_match('#^bug/(\d+)$#', $uri, $matches) && $method == 'GET':
 
@@ -35,27 +40,41 @@ switch (true) {
 
         break;
 
-    case preg_match('#^bug$#', $uri) && $method == 'POST':
+    // TODO: UPDATE
 
-        return (new bugController())->add();
+    case preg_match('#^bug/(\d+)$#', $uri, $matches) && $method == 'PATCH':
+ 
+        $id = $matches[1];
+        return (new bugController())->update($id,$_PATCH);
 
         break;
+        
+    // TODO: ADD
+    case preg_match('#^add$#', $uri) && $method == 'POST':
 
-    case preg_match('#^bug/(\d+)$#', $uri, $matches)  && $method == 'PATCH':
+        return (new bugController())->add($_POST);
+
+    break;
+
+    // TODO: FILTRE
+    case preg_match('#^bug(|\?.)#', $uri) && $method == 'GET':
+
+        $string = $_GET["closed"];
+        return (new bugController())->list_Bug_Closed($string);
+
+    break;
+
+    // TODO: DELETE
+    case preg_match('#^bug/(\d+)$#', $uri, $matches) && $method == 'DELETE':
 
         $id = $matches[1];
 
-        return (new bugController())->update($id);
+        return (new bugController())->delete($id);
 
         break;
 
-    default:
-
-    // var_dump("test");die;
-
-        http_response_code(404);
-
-        header('Content-Type: application/json');
-
-        echo json_encode('Page non trouvée !');
+    default:    
+        var_dump("erreur d'url");
+            
+    // TODO: page non-trouvée
 }

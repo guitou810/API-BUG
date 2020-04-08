@@ -9,160 +9,165 @@ use GuzzleHttp\Client;
 class bugController
 {
 
-    public function list()
+    public function list_Bug()
     {
 
         $bugManager = new BugManager();
 
-        if (isset($_GET['closed']) && $_GET['closed'] == 'false') {
-
-            $bugs = $bugManager->findByClosed(false);
-        } else {
-
-            $bugs = $bugManager->findAll();
-        }
-
+        $bugs = $bugManager->findAll();
+    
         $json = json_encode($bugs);
 
         return $this->sendHttpResponse($json, 200);
     }
 
-    public function update($id)
-    {
+    public function list_Bug_Closed($bool){
 
         $bugManager = new BugManager();
 
-        $bug = $bugManager->find($id);
+        if ($bool != ""){
 
-        // Récupérer les données en PATCH
+            $bugs = $bugManager->findByClosed($bool);
 
-        parse_str(file_get_contents('php://input'), $_PATCH);
-
-        // var_dump($_PATCH);die;
-
-        if (isset($_PATCH["title"])) {
-            $bug->setTitle($_PATCH["title"]);
+            $json = json_encode($bugs);
+    
+            return $this->sendHttpResponse($json, 200);
         }
 
-        if (isset($_PATCH["description"])) {
-            $bug->setDescription($_PATCH["description"]);
-        }
+        return $this->sendHttpResponse("erreur au niveau saisie closed", 200);
+    }
 
-        if (isset($_PATCH["url"])) {
-            $url_array = parse_url($_PATCH["url"]);
+    public function delete($id){
 
-            // var_dump($url_array);die;
+        $bugManager = new BugManager();
 
-            if (isset($url_array['host'])) {
+        $bugs = $bugManager->delete($id);
+    
+        $json = json_encode($bugs);
 
-                // Traitement du domaine 
-
-                $bug->setDomain($url_array['host']);
-
-                // Recherche de l'IP
-
-                $client = new Client([
-                    'base_uri' => 'http://ip-api.com',
-                ]);
-
-                $response = $client->request('GET', '/json/' . $url_array['host'], ['debug' => true]);
-
-                // echo $response->getStatusCode();
-                // echo $response->getHeader('content-type')[0];
-                $body = $response->getBody();
-                $remainingBytes = $body->getContents();
-                $values = json_decode($remainingBytes);
-
-                $ip = $values->query;
-
-                $bug->setIp($ip);
-            }
-
-            if (isset($url_array['path'])) {
-
-                $bug->setUrl($url_array['path']);
-            }
-        }
-
-        
-        if (isset($_PATCH["closed"]) && $_PATCH["closed"] == '1') {
-
-            $bug->setClosed(null);
-        }
-
-        // 4. persister les données
-
-        $bugManager->update($bug);
-
-        $content = json_encode($bug);
-
-        return $this->sendHttpResponse($content, 200);
+        return $this->sendHttpResponse($json, 200);
 
     }
 
     public function show($id)
     {
+        $bugManager = new BugManager();
 
-        $manager = new BugManager();
-
-        $bug = $manager->find($id);
-
-        $json = json_encode($bug);
+        $bugs = $bugManager->find($id);
+        
+        $json = json_encode($bugs);
 
         return $this->sendHttpResponse($json, 200);
+     
+        // TODO: Instancier le bugManager
+
+        // TODO: Récupérer le Bug
+
+        // TODO: Encoder le Bug
+
+        // TODO: Retourner la réponse Json
+
     }
 
-    public function add()
+    public function update($id,$list)
+    {
+
+        $bugManager = new BugManager();
+
+        $bug = $bugManager->find($id);
+        
+        foreach ($list as $key=>$value){
+            echo $value;
+            switch($key){
+                case "title":
+                    $bug->setTitle($value);
+                break;
+                case "description":
+                    $bug->setDescription($value);
+                break;
+                case "url":
+                    $bug->setUrl($value);
+                break;
+                case "domain":
+                    $bug->setDomain($value);
+                break;
+                case "ip":
+                    $bug->setIp($value);
+                break;
+            }
+
+        }
+
+        $bugs = $bugManager->update($bug);
+        $json = json_encode($bug);
+        return $this->sendHttpResponse($json,200);
+
+        // TODO: Set Title
+
+        // TODO: Set Description
+
+        // TODO: Set Url
+
+        // TODO: (optionnal) Set Domain + set Ip
+
+        // TODO: Set Closed
+
+        // TODO: persister les données
+
+        // TODO: Encoder le Bug
+
+        // TODO: Retourner la réponse Json
+
+    }
+
+
+
+    public function add($params)
     {
         
         $bugManager = new BugManager();
 
         $bug = new Bug();
-        $bug->setTitle($_POST["title"]);
-        $bug->setDescription($_POST["description"]);
+        
+        foreach ($params as $key=>$value){
+            switch($key){
+                case "title":
+                    $bug->setTitle($value);
+                break;
+                case "description":
+                    $bug->setDescription($value);
+                break;
+                case "url":
+                    $bug->setUrl($value);
+                break;
+                case "domain":
+                    $bug->setDomain($value);
+                break;
+                case "ip":
+                    $bug->setIp($value);
+                break;
+            }
 
-        // Découpage de l'url
-
-        $url_array = parse_url($_POST["url"]);
-
-        if (isset($url_array['host'])) {
-
-            // Traitement du domaine 
-
-            $bug->setDomain($url_array['host']);
-
-            // Recherche de l'IP
-
-            $client = new Client([
-                'base_uri' => 'http://ip-api.com',
-            ]);
-
-            $response = $client->request('GET', '/json/' . $url_array['host'], ['debug' => true]);
-
-            // echo $response->getStatusCode();
-            // echo $response->getHeader('content-type')[0];
-            $body = $response->getBody();
-            $remainingBytes = $body->getContents();
-            $values = json_decode($remainingBytes);
-
-            $ip = $values->query;
-
-            $bug->setIp($ip);
         }
 
-        if (isset($url_array['path'])) {
-            $bug->setUrl('path');
-        }
+        $bugs = $bugManager->add($bug);
+        $json = json_encode($bug);
+        return $this->sendHttpResponse($json,200);
+        // TODO: Set Title
 
-        $id = $bugManager->add($bug);
+        // TODO: Set Description
+
+        // TODO: Set Url
+
+        // TODO: (optionnal) Set Domain + set Ip
+
+        // TODO: Persister le Bug en BDD et récupérer l'id
 
         // Set Bug Id
 
-        $bug->setId($id);
+        // TODO: Encoder le Bug
 
-        $json = json_encode($bug);
-
-        return $this->sendHttpResponse($json, 201);
+        // TODO: Retourner la réponse Json
     }
 
 

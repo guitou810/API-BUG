@@ -23,18 +23,35 @@ class BugManager extends Manager
                 "ip" => $bug->getIp(),
                 "createdAt" => $bug->getCreatedAt()->format("Y-m-d H:i:s")
             ]); 
-            
-            $id = $dbh->lastInsertId();
+                        
+            // TODO: Décommenter ces lignes pour récupérer l'id ;-)
 
-            return $id;
+            // $id = $dbh->lastInsertId();
+
+            // return $id;
+
+    }
+
+
+
+    public function delete($id){
+
+        $dbh = $this->connectDb();  
+
+            $bug = BugManager::find($id);
+            $sql = "DELETE From bug WHERE id = :id";
+            $sth = $dbh->prepare($sql);
+            $sth->bindParam(':id', $id, \PDO::PARAM_INT);
+            $sth->execute();
+
+            
+            return $bug;
 
     }
 
     public function update(Bug $bug){
 
         $dbh = $this->connectDb();  
-
-            // var_dump($bug->getClosed() );die;
 
             if($bug->getClosed() != null){
                 $bugGetClosed = $bug->getClosed()->format("Y-m-d H:i:s");
@@ -112,8 +129,7 @@ class BugManager extends Manager
 
         $dbh = $this->connectDb();
 
-        if($bool === false){
-
+        if($bool == "false"){
             $results = $dbh->query('SELECT * FROM `bug` WHERE closed IS NULL ORDER BY `id`', \PDO::FETCH_ASSOC);
 
         }else{
@@ -141,23 +157,6 @@ class BugManager extends Manager
 
         return $bugs;
 
-    }
-
-
-    public function load(){
-
-        $handle = @fopen("result.txt", "r");
-        if ($handle) {
-            while (($buffer = fgets($handle, 4096)) !== false) { // TODO: 1 Finaliser la récupération des données issues d'un txt
-                list($id, $description) = explode(";", $buffer);
-                $bug = new Bug($id, $description);
-                $this->add($bug);
-        }
-        if (!feof($handle)) {
-            echo "Erreur: fgets() a échoué\n";
-        }
-        fclose($handle);
-        }
 
     }
 
