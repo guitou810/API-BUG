@@ -1,5 +1,6 @@
 <?php
-
+header("Access-Control-Allow-Origin: *");
+header("Access-Control-Allow-Methods: POST, GET, DELETE,PATCH");
 require('params.php');
 
 ini_set('display_errors', 1);
@@ -25,7 +26,7 @@ switch (true) {
     // LIST
 
     case preg_match('#^bug$#', $uri) && $method == 'GET':
-
+        
         return (new bugController())->list_Bug();
 
         break;
@@ -73,8 +74,8 @@ switch (true) {
 
         break;
 
-    default:    
-        var_dump("erreur d'url");
+    default:  
+        var_dump("erreur url");
             
     // TODO: page non-trouvée
 }

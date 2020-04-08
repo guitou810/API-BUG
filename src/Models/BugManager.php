@@ -82,6 +82,7 @@ class BugManager extends Manager
         $sth->bindParam(':id', $id, \PDO::PARAM_INT);
         $sth->execute();
         $result = $sth->fetch(\PDO::FETCH_ASSOC);
+        if(isset($result["id"])){
 
         $bug = new Bug();
         $bug->setId($result["id"]);
@@ -94,6 +95,11 @@ class BugManager extends Manager
         $bug->setIp($result["ip"]);      
 
         return $bug;
+        }else{
+            $rel = "PAS DE BUG AVEC CET ID DANS LA TABLE";
+            $notf = json_encode($rel);
+            return $notf;
+        }
         
     }
 
